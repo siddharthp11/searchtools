@@ -1,71 +1,29 @@
 # searchtools README
 
-This is the README for your extension "searchtools". After writing up a brief description, we recommend including the following sections.
+Problem:
+Lets be real, no one uses regex to search.
+But we are often searching for complex things
 
-## Features
+- where does this function get called with this arg?
+- show me allmigrations on this table
+- etc.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Singleton matcher will get AI to generate the regex for you and attach the generated regex to a certain command for you to use along with some args
 
-For example if there is an image subfolder under your extension project workspace:
+Requirements:
+keyword: the function the user wants to invoke (fncall, fndef)
+term: the term the user is matching by
 
-\!\[feature X\]\(images/feature-x.png\)
+- Allow the user to map keywords to a regex matching function.
+  eg. table: {term: tab, matcher: (v) => "/s+**tablename**+{v}}
+- Allow the user easy access to keyword via the command palette
+  - This should not take more than one query
+- The user needs to be able to see suggestions while typing out the search term- loading all symbols into memory would be useful here
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Discovery:
 
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- VSCode has symbol search to go to the definition of any variable, functions, class in the codebase.
+- We can solve the problem of going to references of the symbol, but that doesn't make sense generally speaking.
+  - It might make sense for specific cases - show me all the migrations for this table.
+  - Show me all the places this function was called
+- We can use VSCode's symbol search instead of the find in file search

@@ -1,21 +1,39 @@
 {
-  "name": "searchtools",
-  "displayName": "searchtools",
+  "name": "rgx",
+  "displayName": "rgx",
   "description": "",
   "version": "0.0.1",
   "engines": {
-    "vscode": "1.96.2"
+    "vscode": "1.103.2"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "searchtools.helloWorld",
-        "title": "Hello World"
+        "command": "rgx.fn",
+        "title": "rgx:fn"
+      },
+      {
+        "command": "rgx.cla",
+        "title": "rgx:cla"
+      },
+      {
+        "command": "rgx.clacall",
+        "title": "rgx:clacall"
+      },
+      {
+        "command": "rgx.fncall",
+        "title": "rgx:fncall"
+      },
+      {
+        "command": "rgx.tbl",
+        "title": "rgx:tbl"
       }
     ]
   },
