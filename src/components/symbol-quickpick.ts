@@ -7,7 +7,7 @@ import {
 } from "vscode";
 import { window, commands } from "vscode";
 import Command from "../enums/commands";
-import { debounce } from "../utis/debounce";
+import { debounce } from "../utils/debounce";
 
 const defaultItems = Object.freeze([
   {
