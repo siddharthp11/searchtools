@@ -1,8 +1,6 @@
-import { ExtensionContext, commands, SymbolKind } from "vscode";
-import { Keyword } from "./types";
-import { MAPPINGS, KEYWORDS } from "./data/api";
-import Command from "./enums/commands";
-import GetSelectionFromQuickPick from "./components/symbol-quickpick";
+import { ExtensionContext, commands } from "vscode";
+import { KEYWORDS } from "./data/api";
+import { buildSearchForKeyword } from "./generators/get-search-for-keyword";
 
 const PREFIX = "rgx.";
 export function activate(context: ExtensionContext) {
@@ -12,29 +10,5 @@ export function activate(context: ExtensionContext) {
     context.subscriptions.push(disposable);
   });
 }
-
-const buildSearchForKeyword = (keyword: Keyword) => async () => {
-  const { getQuery, allow } = MAPPINGS[keyword];
-
-  const term = await GetSelectionFromQuickPick({
-    placeholder: "Searching for " + allow.map((k) => SymbolKind[k]).join(", "),
-    allow,
-  });
-  if (!term) return;
-
-  const query = getQuery(term);
-
-  await commands.executeCommand(Command.FindInFiles, {
-    query,
-    isRegex: true,
-    isCaseSensitive: false,
-    isWholeWord: false,
-    isUseIgnoreFiles: false,
-  });
-
-  setTimeout(() => {
-    commands.executeCommand(Command.FocusNextSearchResult);
-  }, 400);
-};
 
 export function deactivate() {}

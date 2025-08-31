@@ -17,13 +17,12 @@ interface RawMapping {
 }
 const RAW_MAPPINGS = data as Array<RawMapping>;
 
-type Mappings = Record<
-  Keyword,
-  {
-    getQuery: (v: string) => string;
-    allow: Array<SymbolKind>;
-  }
->;
+interface KeywordData {
+  getQuery: (v: string) => string;
+  allow: Array<SymbolKind>;
+  placeholder: string;
+}
+type Mappings = Record<Keyword, KeywordData>;
 const PLACEHOLDER = "${v}";
 function getMappings() {
   const map: Mappings = {};
@@ -32,6 +31,7 @@ function getMappings() {
     const { name, allow, regex } = rawMapping;
     map[name] = {
       allow: allow.map((a) => SymbolKind[a]),
+      placeholder: "Searching for " + allow.join(", "),
       getQuery: (v) =>
         // .slice is used since RegExp .toString pads the regex with '/' on either side.
         RegExp(regex.replace(PLACEHOLDER, v)).toString().slice(1, -1),
