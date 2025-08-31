@@ -1,48 +1,27 @@
-/*
-FEATURE: 
-    - Search for imports
-    - Search for migrations 
-    - Language Specific 
-*/
-
 import { SymbolKind } from "vscode";
-import { Keyword } from "../types";
 import data from "./mapping.json";
+import { Mappings, RawMapping } from "./types";
 
-// Mappings API
-interface RawMapping {
-  name: Keyword;
-  regex: string;
-  allow: Array<keyof typeof SymbolKind>;
-}
+const PLACEHOLDER = "${v}";
 const RAW_MAPPINGS = data as Array<RawMapping>;
 
-interface KeywordData {
-  getQuery: (v: string) => string;
-  allow: Array<SymbolKind>;
-  placeholder: string;
-}
-type Mappings = Record<Keyword, KeywordData>;
-const PLACEHOLDER = "${v}";
 function getMappings() {
-  const map: Mappings = {};
+  const m: Mappings = {};
 
-  for (const rawMapping of RAW_MAPPINGS) {
-    const { name, allow, regex } = rawMapping;
-    map[name] = {
+  for (const { name, allow, regex } of RAW_MAPPINGS) {
+    m[name] = {
       allow: allow.map((a) => SymbolKind[a]),
       placeholder: "Searching for " + allow.join(", "),
       getQuery: (v) =>
-        // .slice is used since RegExp .toString pads the regex with '/' on either side.
-        RegExp(regex.replace(PLACEHOLDER, v)).toString().slice(1, -1),
+        RegExp(regex.replace(PLACEHOLDER, v)).toString().slice(1, -1), // .slice is used since RegExp .toString pads the regex with '/' on either side.
     };
   }
-  return Object.freeze(map);
+  return Object.freeze(m);
 }
-// Keywords API
+
 function getKeywords() {
-  const keywords = RAW_MAPPINGS.map((r) => r.name);
-  return Object.freeze(keywords);
+  const k = RAW_MAPPINGS.map((r) => r.name);
+  return Object.freeze(k);
 }
 
 /**
@@ -52,5 +31,4 @@ function getKeywords() {
  * * allow: symbol types to suggest during symbol search
  */
 export const MAPPINGS = getMappings();
-
 export const KEYWORDS = getKeywords();

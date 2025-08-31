@@ -11,8 +11,15 @@ But we are often searching for complex things
 Singleton matcher will get AI to generate the regex for you and attach the generated regex to a certain command for you to use along with some args
 
 Requirements:
-keyword: the function the user wants to invoke (fncall, fndef)
-term: the term the user is matching by
+/\*
+TODO's:
+
+- Search for imports
+- Search for migrations
+- Language Specific
+  \*/
+  keyword: the function the user wants to invoke (fncall, fndef)
+  term: the term the user is matching by
 
 - Allow the user to map keywords to a regex matching function.
   eg. table: {term: tab, matcher: (v) => "/s+**tablename**+{v}}
