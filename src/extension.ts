@@ -1,19 +1,20 @@
 import { ExtensionContext, commands, SymbolKind } from "vscode";
 import { Keyword } from "./types";
-import { MAPPINGS } from "./db";
+import { MAPPINGS, KEYWORDS } from "./data/api";
 import Command from "./enums/commands";
 import GetSelectionFromQuickPick from "./components/symbol-quickpick";
 
+const PREFIX = "rgx.";
 export function activate(context: ExtensionContext) {
-  Object.keys(MAPPINGS).forEach((keyword) => {
-    const search = getSearchFunction(keyword);
-    const disposable = commands.registerCommand(`rgx.${keyword}`, search);
+  KEYWORDS.forEach((k) => {
+    const search = buildSearchForKeyword(k);
+    const disposable = commands.registerCommand(PREFIX + k, search);
     context.subscriptions.push(disposable);
   });
 }
 
-const getSearchFunction = (keyword: Keyword) => async () => {
-  const { matcher, allow } = MAPPINGS[keyword];
+const buildSearchForKeyword = (keyword: Keyword) => async () => {
+  const { getQuery, allow } = MAPPINGS[keyword];
 
   const term = await GetSelectionFromQuickPick({
     placeholder: "Searching for " + allow.map((k) => SymbolKind[k]).join(", "),
@@ -21,10 +22,10 @@ const getSearchFunction = (keyword: Keyword) => async () => {
   });
   if (!term) return;
 
-  const regex = matcher(term).toString().slice(1, -1);
+  const query = getQuery(term);
 
   await commands.executeCommand(Command.FindInFiles, {
-    query: regex,
+    query,
     isRegex: true,
     isCaseSensitive: false,
     isWholeWord: false,
@@ -33,7 +34,7 @@ const getSearchFunction = (keyword: Keyword) => async () => {
 
   setTimeout(() => {
     commands.executeCommand(Command.FocusNextSearchResult);
-  }, 700);
+  }, 400);
 };
 
 export function deactivate() {}

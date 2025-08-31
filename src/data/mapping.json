@@ -1,0 +1,27 @@
+[
+  {
+    "name": "fn",
+    "regex": "def\\s+${v}",
+    "allow": ["Function", "Method"]
+  },
+  {
+    "name": "fncall",
+    "regex": "(?<!def)\\s${v}\\(",
+    "allow": ["Function", "Method"]
+  },
+  {
+    "name": "cla",
+    "regex": "class\\s+${v}:",
+    "allow": ["Class"]
+  },
+  {
+    "name": "clacall",
+    "regex": "(?<!class)\\s${v}\\(",
+    "allow": []
+  },
+  {
+    "name": "tbl",
+    "regex": "__tablename__\\s*=\\s*[\\\"']${v}[\\\"']",
+    "allow": ["Constant", "String"]
+  }
+]

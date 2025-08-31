@@ -7,6 +7,7 @@ import {
 } from "vscode";
 import { window, commands } from "vscode";
 import Command from "../enums/commands";
+import { debounce } from "../utis/debounce";
 
 const defaultItems = Object.freeze([
   {
@@ -14,6 +15,10 @@ const defaultItems = Object.freeze([
     detail: "Results will appear below",
   },
 ]);
+
+// const icon: Record<SymbolKind, string> {
+//   [SymbolKind.Function]:
+// }
 
 type SymbolSearchResults = SymbolInformation[] | DocumentSymbol[] | undefined;
 type QPItemWithValue = QuickPickItem & { value?: string };
@@ -34,12 +39,9 @@ const GetSelectionFromQuickPick = ({
   const qp = window.createQuickPick<QPItemWithValue>();
   qp.items = defaultItems;
   qp.placeholder = placeholder;
-  qp.matchOnDescription = false;
-  qp.matchOnDetail = true;
   qp.ignoreFocusOut = true;
 
   // Debounce + cancellation to avoid flooding the symbol provider
-  let debouncedTimer: NodeJS.Timeout | undefined;
   let currentCancel: CancellationTokenSource | undefined;
 
   const symbolSearch = async (query: string) => {
@@ -52,10 +54,9 @@ const GetSelectionFromQuickPick = ({
       return;
     }
     qp.busy = true;
-    const symbols: SymbolSearchResults = await commands.executeCommand(
-      Command.WorkspaceSymbolSearch,
-      query
-    );
+    const symbols: SymbolSearchResults =
+      (await commands.executeCommand(Command.WorkspaceSymbolSearch, query)) ??
+      [];
     // if the token was cancelled by another search after the promise was kicked off, abort it!
     if (token.isCancellationRequested) {
       qp.busy = false;
@@ -65,42 +66,40 @@ const GetSelectionFromQuickPick = ({
     // assuming a cancellation req cannot be sent when the following synchronous work is being done -
     try {
       const items: QPItemWithValue[] = [];
+      for (const s of symbols.slice(0, 200)) {
+        if ("children" in s) {
+          const stack: Array<DocumentSymbol> = [s];
+          while (stack.length > 0) {
+            const node = stack.pop() as DocumentSymbol; // guaranteed that element exists
 
-      if (Array.isArray(symbols)) {
-        for (const s of symbols.slice(0, 200)) {
-          if ("children" in s) {
-            const stack: Array<DocumentSymbol> = [s];
-            while (stack.length > 0) {
-              const node = stack.pop() as DocumentSymbol; // guaranteed that element exists
-
-              // update stack
-              node.children.forEach((childNode) => {
-                stack.push(childNode);
-              });
-              if (allow && node.kind && !allow.includes(node.kind)) continue;
-              items.push({
-                label: node.name,
-                description: SymbolKind[node.kind],
-                detail: node.detail,
-                value: node.name,
-              });
-            }
-          } else {
-            const file = s.location.uri.fsPath.split(/[\\/]/).pop() ?? "";
-            if (allow && s.kind && !allow.includes(s.kind)) continue;
+            // update stack
+            node.children.forEach((childNode) => {
+              stack.push(childNode);
+            });
+            if (allow && node.kind && !allow.includes(node.kind)) continue;
             items.push({
-              label: s.name,
-              description: SymbolKind[s.kind] + " in " + file,
-              value: s.name,
+              label: node.name,
+              description: SymbolKind[node.kind],
+              detail: node.detail,
+              value: node.name,
             });
           }
+        } else {
+          const file = s.location.uri.fsPath.split(/[\\/]/).pop() ?? "";
+          if (allow && s.kind && !allow.includes(s.kind)) continue;
+          items.push({
+            label: s.name,
+            description: SymbolKind[s.kind] + " in " + file,
+            value: s.name,
+          });
         }
       }
       // always allow the user to user the raw string
-      items.push({
-        label: `Use “${query}”`,
+      items.splice(0, 0, {
+        label: `$(lightbulb) Apply “${query}”`,
         description: "Search with this exact text",
         value: query,
+        alwaysShow: true,
       });
       qp.items = items;
     } catch (e) {
@@ -112,11 +111,7 @@ const GetSelectionFromQuickPick = ({
     }
   };
 
-  const debouncedSymbolSearch = (v: string) => {
-    if (debouncedTimer) clearTimeout(debouncedTimer);
-    debouncedTimer = setTimeout(() => symbolSearch(v), 150);
-  };
-
+  const debouncedSymbolSearch = debounce(symbolSearch, 200);
   qp.onDidChangeValue(debouncedSymbolSearch);
 
   const selectionPromise = new Promise<string | undefined>((resolve) => {
