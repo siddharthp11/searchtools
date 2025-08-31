@@ -7,18 +7,17 @@ FEATURE:
 
 import { SymbolKind } from "vscode";
 import { Keyword } from "../types";
-import rawMappings from "./mapping.json";
+import data from "./mapping.json";
 
-/*
-Mappings API 
-*/
-
+// Mappings API
 interface RawMapping {
   name: Keyword;
   regex: string;
   allow: Array<keyof typeof SymbolKind>;
 }
-type ParsedMappings = Record<
+const RAW_MAPPINGS = data as Array<RawMapping>;
+
+type Mappings = Record<
   Keyword,
   {
     getQuery: (v: string) => string;
@@ -27,18 +26,23 @@ type ParsedMappings = Record<
 >;
 const PLACEHOLDER = "${v}";
 function getMappings() {
-  const map = {} as ParsedMappings;
+  const map: Mappings = {};
 
-  for (const rawMapping of rawMappings) {
-    const { name, allow, regex } = rawMapping as RawMapping;
+  for (const rawMapping of RAW_MAPPINGS) {
+    const { name, allow, regex } = rawMapping;
     map[name] = {
       allow: allow.map((a) => SymbolKind[a]),
-      getQuery: (v: string) =>
+      getQuery: (v) =>
         // .slice is used since RegExp .toString pads the regex with '/' on either side.
         RegExp(regex.replace(PLACEHOLDER, v)).toString().slice(1, -1),
     };
   }
   return Object.freeze(map);
+}
+// Keywords API
+function getKeywords() {
+  const keywords = RAW_MAPPINGS.map((r) => r.name);
+  return Object.freeze(keywords);
 }
 
 /**
@@ -49,8 +53,4 @@ function getMappings() {
  */
 export const MAPPINGS = getMappings();
 
-function getKeywords() {
-  const keywords = Object.keys(MAPPINGS) as Keyword[];
-  return Object.freeze(keywords);
-}
 export const KEYWORDS = getKeywords();
