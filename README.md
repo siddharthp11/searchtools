@@ -1,31 +1,35 @@
 # searchtools README
 
-Problem:
-Lets be real, no one uses regex to search.
-But we are often searching for complex things
+## Dev TODO's:
 
-- where does this function get called with this arg?
-- show me allmigrations on this table
-- etc.
-
-Singleton matcher will get AI to generate the regex for you and attach the generated regex to a certain command for you to use along with some args
-
-Requirements:
-/\*
-TODO's:
-
-- Search for imports
-- Search for migrations
-- Language Specific
-  \*/
-  keyword: the function the user wants to invoke (fncall, fndef)
-  term: the term the user is matching by
-
-- Allow the user to map keywords to a regex matching function.
-  eg. table: {term: tab, matcher: (v) => "/s+**tablename**+{v}}
+- The following keywords should be available out of the box:
+  1. Search for imports
+  2. Search for migrations
+  3. Not as important for now: Language Specific
+- The user should be able to create their own mappings.
+  - We need to persist these in VSCode k-v or some other DB.
+  - We can allow CRUD via QuickPick
 - Allow the user easy access to keyword via the command palette
   - This should not take more than one query
-- The user needs to be able to see suggestions while typing out the search term- loading all symbols into memory would be useful here
+
+### Done
+
+- The user needs to be able to see suggestions while typing out the search term
+
+## Problem:
+
+Lets be real, no one uses regex to search. But we are often searching for complex things -
+
+- Where does this function get called with these arg?
+- Sho me all migrations on this table.
+- Show me everywhere this gets imported.
+
+RGX will get AI to generate the regex for you and attach the generated regex to a certain command for you to use along with some args
+
+## Definitions
+
+keyword: the function the user wants to invoke (fncall, fndef)
+term: the term the user is matching by
 
 Discovery:
 
