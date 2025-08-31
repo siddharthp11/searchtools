@@ -2,16 +2,33 @@
 
 ## Dev TODO's:
 
+Search Flow:
+
+- QuickPick step 1: CMD + J to view keyword options
+  - Items: Name, Description, Keyword Icon, UD operations
+- Quick pick step 2: Enter query:
+  - Loaded: Placeholder, Get regex parameters, Find in files search params
+  - Items: Symbol Icon
+- Click enter, view results
+
+Side Menu:
+
+- CRUD on keywords:
+  - Name
+  - Description
+  - Keyword Icon
+  - Parametrized regex: AI!!
+  - Find in files params AI! requires codebase files structure tool
+  - Get symbols params AI! requires prompt context
+- Side effects:
+
+  - Should write to a relational DB
+  - Allow CRUD via QuickPick
+
 - The following keywords should be available out of the box:
   1. Search for imports
   2. Search for migrations
   3. Not as important for now: Language Specific
-- The user should be able to create their own mappings.
-  - We need to persist these in VSCode k-v or some other DB.
-  - We can allow CRUD via QuickPick
-- Allow the user easy access to keyword via the command palette
-  - This should not take more than one query
-- Add icons to QuickPick items - low prio
 
 ### Done
 
@@ -32,7 +49,7 @@ RGX will get AI to generate the regex for you and attach the generated regex to 
 keyword: the function the user wants to invoke (fncall, fndef)
 term: the term the user is matching by
 
-Discovery:
+## Discovery:
 
 - VSCode has symbol search to go to the definition of any variable, functions, class in the codebase.
 - We can solve the problem of going to references of the symbol, but that doesn't make sense generally speaking.
