@@ -11,6 +11,7 @@
   - We can allow CRUD via QuickPick
 - Allow the user easy access to keyword via the command palette
   - This should not take more than one query
+- Add icons to QuickPick items - low prio
 
 ### Done
 

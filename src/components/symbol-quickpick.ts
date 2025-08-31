@@ -16,10 +16,6 @@ const defaultItems = Object.freeze([
   },
 ]);
 
-// const icon: Record<SymbolKind, string> {
-//   [SymbolKind.Function]:
-// }
-
 type SymbolSearchResults = SymbolInformation[] | DocumentSymbol[] | undefined;
 type QPItemWithValue = QuickPickItem & { value?: string };
 
