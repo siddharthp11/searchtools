@@ -27,8 +27,12 @@ function getKeywords() {
 /**
  * Contains the available keyword functions.
  * Each keyword is mapped to:
- * * getQuery: generates a regex search expression for the keyword
+ * * getRegex: generates a regex search expression for the keyword
  * * allow: symbol types to suggest during symbol search
  */
 export const MAPPINGS = getMappings();
+/**
+ * Contains the available keywords
+ * * list of strings.
+ */
 export const KEYWORDS = getKeywords();

@@ -56,3 +56,9 @@ term: the term the user is matching by
   - It might make sense for specific cases - show me all the migrations for this table.
   - Show me all the places this function was called
 - We can use VSCode's symbol search instead of the find in file search
+
+## Building
+
+npm i -g @vscode/vsce # once
+vsce package # produces something like my-ext-0.0.1.vsix
+Install from vsix.
