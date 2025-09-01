@@ -7,7 +7,7 @@ export interface RawMapping {
 }
 
 interface KeywordData {
-  getQuery: (v: string) => string;
+  getRegex: (v: string) => string;
   allow: Array<SymbolKind>;
   placeholder: string;
 }

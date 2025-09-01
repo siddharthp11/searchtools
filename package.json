@@ -16,24 +16,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "rgx.fn",
-        "title": "rgx:fn"
-      },
-      {
-        "command": "rgx.cla",
-        "title": "rgx:cla"
-      },
-      {
-        "command": "rgx.clacall",
-        "title": "rgx:clacall"
-      },
-      {
-        "command": "rgx.fncall",
-        "title": "rgx:fncall"
-      },
-      {
-        "command": "rgx.tbl",
-        "title": "rgx:tbl"
+        "command": "rgx.search",
+        "title": "rgx: Start matching"
       }
     ],
     "views": {

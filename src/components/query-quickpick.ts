@@ -28,7 +28,7 @@ interface QuickPickOptions {
  * Shows a QuickPick that live-queries workspace symbols while typing.
  * Returns the chosen symbol name or the raw text if user confirms free text.
  */
-const GetSelectionFromQuickPick = ({
+const GetQueryFromQuickPick = ({
   placeholder,
   allow,
 }: QuickPickOptions): Promise<string | undefined> => {
@@ -64,18 +64,7 @@ const GetSelectionFromQuickPick = ({
       const items: QPItemWithValue[] = [];
       for (const s of symbols.slice(0, 200)) {
         if ("children" in s) {
-          const stack = [s];
-          while (stack.length > 0) {
-            const node = stack.pop() as DocumentSymbol; // guaranteed that element exists
-            node.children.forEach((child) => stack.push(child));
-            if (allow && node.kind && !allow.includes(node.kind)) continue;
-            items.push({
-              label: node.name,
-              description: node.kind.toString(),
-              detail: node.detail,
-              value: node.name,
-            });
-          }
+          continue;
         } else {
           const file = s.location.uri.fsPath.split(/[\\/]/).pop() ?? "";
           if (allow && s.kind && !allow.includes(s.kind)) continue;
@@ -109,7 +98,7 @@ const GetSelectionFromQuickPick = ({
   const selectionPromise = new Promise<string | undefined>((resolve) => {
     qp.onDidAccept(() => {
       const sel = qp.selectedItems?.[0];
-      resolve(sel.value ?? qp.value ?? undefined);
+      resolve(sel.value ?? undefined);
       qp.hide();
       qp.dispose();
       currentCancel?.cancel();
@@ -126,4 +115,4 @@ const GetSelectionFromQuickPick = ({
   return selectionPromise;
 };
 
-export default GetSelectionFromQuickPick;
+export default GetQueryFromQuickPick;

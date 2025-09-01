@@ -12,7 +12,7 @@ function getMappings() {
     m[name] = {
       allow: allow.map((a) => SymbolKind[a]),
       placeholder: "Searching for " + allow.join(", "),
-      getQuery: (v) =>
+      getRegex: (v) =>
         RegExp(regex.replace(PLACEHOLDER, v)).toString().slice(1, -1), // .slice is used since RegExp .toString pads the regex with '/' on either side.
     };
   }
