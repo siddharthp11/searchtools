@@ -64,18 +64,14 @@ const GetSelectionFromQuickPick = ({
       const items: QPItemWithValue[] = [];
       for (const s of symbols.slice(0, 200)) {
         if ("children" in s) {
-          const stack: Array<DocumentSymbol> = [s];
+          const stack = [s];
           while (stack.length > 0) {
             const node = stack.pop() as DocumentSymbol; // guaranteed that element exists
-
-            // update stack
-            node.children.forEach((childNode) => {
-              stack.push(childNode);
-            });
+            node.children.forEach((child) => stack.push(child));
             if (allow && node.kind && !allow.includes(node.kind)) continue;
             items.push({
               label: node.name,
-              description: SymbolKind[node.kind],
+              description: node.kind.toString(),
               detail: node.detail,
               value: node.name,
             });
@@ -85,7 +81,7 @@ const GetSelectionFromQuickPick = ({
           if (allow && s.kind && !allow.includes(s.kind)) continue;
           items.push({
             label: s.name,
-            description: SymbolKind[s.kind] + " in " + file,
+            description: s.kind.toString() + " in " + file,
             value: s.name,
           });
         }

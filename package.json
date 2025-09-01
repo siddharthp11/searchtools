@@ -35,7 +35,17 @@
         "command": "rgx.tbl",
         "title": "rgx:tbl"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "visibility": "collapsed",
+          "id": "rgx",
+          "icon": "$(compass)",
+          "name": "Matchers"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
